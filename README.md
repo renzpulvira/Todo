@@ -1,5 +1,5 @@
 # Todolist
-A Simple todolist made with _HTML, CSS(SCSS), Javascript and localstorage.
+A Simple todolist made with _HTML, CSS(SCSS), Javascript and localstorage._
 
 ### Instructions
 1. Clone repo
