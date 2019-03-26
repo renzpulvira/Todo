@@ -21,19 +21,21 @@
 <body>
 
   <main class="home">
-    <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a
+    <!-- <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a
         href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a
         href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-    </div>
+    </div> -->
 
     <div class="todolist__wrapper">
-      <h3 class="todolist__title">Todo List</h3>
-      <input id="inputList" class="todolist__input" type="text">
-      <button id="captureData" class="btn btn-capture">Add List</button>
-
-      <p class="todolist__list-title">Lists</p>
-      <ul id="dataContainer" class="todolist__list-container">
-      </ul>
+      <div class="todolist__wrapper-inner">
+        <h3 class="todolist__title">Todo List</h3>
+        <input id="inputList" class="todolist__input" data-index="" data-state="adding" type="text">
+        <button id="captureData" class="btn btn-capture">Add List</button>
+  
+        <p class="todolist__list-title">Lists</p>
+        <ul id="dataContainer" class="todolist__list-container">
+        </ul>
+      </div>
     </div>
   </main>
 

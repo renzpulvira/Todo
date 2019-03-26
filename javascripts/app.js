@@ -1,34 +1,3 @@
-/*
-TODO LIST
-1. GENERATE AN EMPY OBJECT / 
-2. CHECK IF TEXTBOX HAS VALUE /
-3. CREATE AN OBJECT SKELETON
-4.FUNCTIONALITIES
-  - ADD LIST DATA to Localstorage
-  - RENDER LIST DATA to DOM
-  - REMOVE LIST DATA to localstorage 
-  - REMOVE LIST DATA to DOM
-  - ADDITIONAL: EDIT DATA to Localstorage and DOM
-*/
-
-/* 
-CODE TO GET THE NUMBERS IN A STRING
-var theString = "hello123124515-125125";
-var numb = theString.match(/\d/g);
-numb = numb.join("");
-
-// ASSIGNMENT
-CHECK IF an ARRAY HAS VALUE
-*/
-
-// window.onload = function() {
-//   if(!(DataKey in localStorage)) {
-//     localStorage.setItem(DataKey, JSON.stringify(starterTemplate));
-//   } else {
-//     console.log('has value... Ignoring generating of empty object');
-//   }
-// }
-
 var inputList = document.getElementById('inputList'),
   captureButton = document.getElementById('captureData'),
   dataContainer = document.getElementById('dataContainer'),
@@ -37,18 +6,32 @@ var removeListItem = document.getElementById('removeListItem');
 var starterTemplate = {};
 const DataKey = "User-Info";
 var listsHolder;
+var editingArea = document.querySelectorAll('div.todolist__wrapper-edit'),
+  editListItem = document.querySelectorAll('span.editDataWrapper');
 
 let todoListContainer = {
+  currentStorage: {},
   lists: [],
-  outputData: function() {
+  listEditData: {
+    listId: 0,
+    listValue: ""
+  },
+  outputData: function () {
     listsHolder = ``;
 
-    if(this.lists.length == 0) {
+    if (this.lists.length == 0) {
       dataContainer.innerHTML = `Add a list.`;
     } else {
-      for(iter = 0; iter < this.lists.length; iter++){
+      for (iter = 0; iter < this.lists.length; iter++) {
         listsHolder += `
-        <li class="todolist__list-item">${this.lists[iter].listData} 
+        <li class="todolist__list-item">
+        <span id="editDataWrapper" data-id="${iter}" class="todolist__list-data">${this.lists[iter].listData}</span>
+        <button id="editBtn" 
+                onclick="todoListContainer.editData(this.dataset.id)"
+                class="edit-list"
+                data-id="${iter}">
+          <img src="../assets/images/edit-icon.png" />
+        </button>
         <button id="removeListItem" 
                 onclick="getValue(this.value)" 
                 value="${iter}"  
@@ -62,38 +45,86 @@ let todoListContainer = {
 
     console.log(`Current lists: ${this.lists.length}`);
   },
-  removeData: function(target) {
-    if(target == 0) {
+  removeData: function (target) {
+    if (target == 0) {
       this.lists.shift();
-    } else if(target == this.lists.length) {
+    } else if (target == this.lists.length) {
       this.lists.pop();
     } else {
       this.lists.splice(target, 1);
     }
     this.outputData();
+    updateLocalStorage();
   },
+  editData: function (value) {
+    turnEditState();
+
+    this.listEditData.listId = value
+    inputList.value = this.lists[value].listData
+  },
+  updateData: function () {
+    var overWriteIndex = this.listEditData.listId;
+    this.lists[overWriteIndex].listData = inputList.value
+    inputList.value = ""
+    inputList.dataset.state = "adding"
+    captureButton.innerText = "ADD LIST"
+    updateLocalStorage();
+  }
 }
 
-window.addEventListener('load', function(){
-  todoListContainer.outputData();
+window.addEventListener('load', function () {
+
+  if (localStorage.getItem('lists-data') === null) {
+    localStorage.setItem('lists-data', JSON.stringify({}))
+    convertToArray('lists-data');
+  } else {
+    convertToArray('lists-data');
+  }
 })
 
-captureButton.addEventListener('click', function() {
-  if(!(inputList.value == "")) {
+captureButton.addEventListener('click', function () {
+  if (!(inputList.value == "")) {
     // IF HAS VALUE
-    captureData();
+    if (inputList.dataset.state == "editing") {
+      todoListContainer.updateData();
+    } else {
+      captureData();
+    }
+
     todoListContainer.outputData();
   } else {
     alert('has no value');
   }
 })
 
-function getValue(clicked_index){
+function convertToArray(data_key) {
+  var convertBack = Object.values(JSON.parse(localStorage.getItem(data_key)));
+  todoListContainer.lists = convertBack
+  todoListContainer.outputData();
+}
+
+
+function getValue(clicked_index) {
   var dataIndex = clicked_index;
   todoListContainer.removeData(dataIndex);
 }
 
+// Maybe turn this to an object function
 function captureData() {
-  var theData = {listData: inputList.value};
+  var theData = { listData: inputList.value };
   todoListContainer.lists.push(theData);
+  inputList.value = "";
+  updateLocalStorage();
+}
+
+function turnEditState() {
+  if (inputList.dataset.state == "adding") {
+    captureButton.innerText = "DONE EDITING"
+    inputList.dataset.state = "editing"
+  }
+}
+
+function updateLocalStorage() {
+  var dataStorage = Object.assign({}, todoListContainer.lists);
+  localStorage.setItem('lists-data', JSON.stringify(dataStorage));
 }
