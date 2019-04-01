@@ -2,12 +2,7 @@ var inputList = document.getElementById('inputList'),
   captureButton = document.getElementById('captureData'),
   dataContainer = document.getElementById('dataContainer'),
   indexList;
-var removeListItem = document.getElementById('removeListItem');
-var starterTemplate = {};
-const DataKey = "User-Info";
 var listsHolder;
-var editingArea = document.querySelectorAll('div.todolist__wrapper-edit'),
-  editListItem = document.querySelectorAll('span.editDataWrapper');
 
 let todoListContainer = {
   currentStorage: {},
@@ -118,7 +113,7 @@ function captureData() {
 }
 
 function turnEditState() {
-  if (inputList.dataset.state == "adding") {
+  if (inputList.dataset.state === "adding") {
     captureButton.innerText = "DONE EDITING"
     inputList.dataset.state = "editing"
   }
